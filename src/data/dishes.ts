@@ -185,6 +185,62 @@ export const PRESET_DISHES: PresetDish[] = [
   },
 ]
 
+// ひらがなで打っても見つかるように、漢字を含む料理名の読み（検索用）
+const YOMI: Record<string, string> = {
+  'rice-s': 'ごはん ちゃわん こもり はくまい',
+  rice: 'ごはん ちゃわん いっぱい はくまい',
+  'rice-l': 'ごはん おおもり はくまい',
+  bread: 'しょくぱん ぱん',
+  'miso-soup': 'みそしる とうふ わかめ',
+  tonjiru: 'とんじる ぶたじる',
+  'pumpkin-soup': 'かぼちゃ すーぷ',
+  shogayaki: 'ぶたのしょうがやき しょうがやき ぶたにく',
+  nikujaga: 'にくじゃが',
+  chikuzenni: 'ちくぜんに にもの',
+  karaage: 'とりのからあげ からあげ とりにく',
+  'teriyaki-chicken': 'とりのてりやき てりやき とりにく',
+  salmon: 'やきざけ しゃけ さけ',
+  'saba-shio': 'しおさば さば',
+  'saba-miso': 'さばのみそに みそに さば',
+  'buri-teri': 'ぶりのてりやき てりやき ぶり',
+  'aji-nanban': 'あじのなんばんづけ なんばんづけ あじ',
+  tamagoyaki: 'たまごやき だしまき',
+  medamayaki: 'めだまやき たまご',
+  hiyayakko: 'ひややっこ とうふ',
+  hamburg: 'はんばーぐ あいびき',
+  'tofu-hamburg': 'とうふはんばーぐ',
+  croquette: 'ころっけ',
+  'cream-croquette': 'かにくりーむころっけ ころっけ',
+  'shiromi-fry': 'しろみざかなふらい ふらい',
+  menchi: 'めんちかつ',
+  'beef-stew': 'びーふしちゅー しちゅー',
+  'chicken-stew': 'くりーむしちゅー しちゅー',
+  gyoza: 'ぎょうざ',
+  harumaki: 'はるまき',
+  subuta: 'すぶた',
+  happosai: 'はっぽうさい',
+  mabo: 'まーぼーどうふ まーぼー',
+  'yasai-itame': 'やさいいため ぶたにく',
+  kinpira: 'きんぴらごぼう きんぴら',
+  hijiki: 'ひじきのいために ひじき',
+  kiriboshi: 'きりぼしだいこん にもの',
+  shiraae: 'あおなのしらあえ しらあえ',
+  'goma-ae': 'いんげんのごまあえ ごまあえ',
+  namasu: 'こうはくなます なます',
+  ohitashi: 'ほうれんそうのおひたし おひたし',
+  salad: 'さらだ',
+  'curry-pork': 'かれーらいす かれー ぽーく ぶたにく',
+  'curry-beef': 'かれーらいす かれー びーふ ぎゅうにく',
+  'curry-chicken': 'かれーらいす かれー ちきん とりにく',
+  oyakodon: 'おやこどん どんぶり',
+  gyudon: 'ぎゅうどん どんぶり',
+  okonomiyaki: 'おこのみやき',
+  yakisoba: 'やきそば',
+  'meat-sauce': 'すぱげってぃ みーとそーす ぱすた',
+  'kake-udon': 'かけうどん うどん',
+  'ramen-home': 'ちゅうかそば らーめん',
+}
+
 export interface ComputedDish extends PresetDish {
   perServing: Nutrients
   grams: number
@@ -209,7 +265,7 @@ export function getPresetDishes(): ComputedDish[] {
         ...d,
         perServing: computeIngredients(d.ingredients),
         grams: d.ingredients.reduce((s, i) => s + i.grams, 0),
-        norm: normalize(d.name + d.category),
+        norm: [d.name + d.category, ...(YOMI[d.id] ?? '').split(/\s+/)].map(normalize).filter(Boolean).join('|'),
       }
       cache.set(d.id, c)
     }

@@ -76,6 +76,21 @@ describe('search', () => {
     expect(searchFoods('ごはん')[0]?.code).toBe('01088')
     expect(searchFoods('木綿豆腐').length).toBeGreaterThan(0)
   })
+  it('料理名をひらがなで打っても見つかる', () => {
+    const find = (q: string) => getPresetDishes().filter((d) => matches(d.norm, expandQuery(q))).map((d) => d.id)
+    expect(find('にくじゃが')).toContain('nikujaga')
+    expect(find('しょうがやき')).toContain('shogayaki')
+    expect(find('まーぼー')).toContain('mabo')
+    expect(find('カレー')).toEqual(expect.arrayContaining(['curry-pork', 'curry-beef', 'curry-chicken']))
+    expect(find('からあげ')).toContain('karaage')
+  })
+  it('食品名をひらがなで打っても見つかる', () => {
+    expect(searchFoods('とりにく').slice(0, 5).every((f) => f.name.includes('にわとり'))).toBe(true)
+    expect(searchFoods('もめんどうふ')[0]?.code).toBe('04032')
+    expect(searchFoods('けいらん')[0]?.code).toBe('12004')
+    expect(searchFoods('ぎゅうにゅう')[0]?.code).toBe('13003')
+    expect(searchFoods('トリニク').length).toBeGreaterThan(0)
+  })
   it('よく使う部位が内臓より先に出る', () => {
     const top = searchFoods('にわとり').slice(0, 5).map((f) => f.name).join('\n')
     expect(top).toMatch(/もも/)

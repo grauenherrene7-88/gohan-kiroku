@@ -62,7 +62,34 @@ const SYNONYMS: Record<string, string[]> = {
   お茶: ['茶'],
   コーヒー: ['コーヒー浸出液'],
   ジュース: ['ジュース'],
+  // ひらがなで打ったとき、成分表の漢字表記にも当たるように
+  とりにく: ['にわとり'],
+  ぶたにく: ['ぶた'],
+  ぎゅうにく: ['うし'],
+  ひきにく: ['ひき肉'],
+  あいびき: ['ひき肉'],
+  けいらん: ['鶏卵'],
+  とうふ: ['豆腐'],
+  もめん: ['木綿豆腐'],
+  もめんどうふ: ['木綿豆腐'],
+  きぬ: ['絹ごし豆腐'],
+  きぬごし: ['絹ごし豆腐'],
+  あぶらあげ: ['油揚げ'],
+  なっとう: ['糸引き納豆'],
+  ぎゅうにゅう: ['普通牛乳'],
+  しお: ['食塩'],
+  さとう: ['上白糖'],
+  あぶら: ['油'],
+  こむぎこ: ['小麦粉'],
+  はくりきこ: ['薄力粉'],
+  かたくりこ: ['じゃがいもでん粉'],
+  こめ: ['こめ'],
+  りょくちゃ: ['緑茶'],
+  こうちゃ: ['紅茶'],
 }
+
+// カタカナ・ひらがな・全角半角の違いを吸収して引けるようにする
+const SYNONYM_INDEX = new Map(Object.entries(SYNONYMS).map(([k, v]) => [normalize(k), v]))
 
 /** クエリ（空白区切り）を、各語の候補リストに展開する */
 export function expandQuery(q: string): string[][] {
@@ -70,7 +97,7 @@ export function expandQuery(q: string): string[][] {
     .split(/[\s　]+/)
     .filter(Boolean)
     .map((w) => {
-      const alts = [w, ...(SYNONYMS[w] ?? [])]
+      const alts = [w, ...(SYNONYM_INDEX.get(normalize(w)) ?? [])]
       return [...new Set(alts.map(normalize))].filter(Boolean)
     })
     .filter((alts) => alts.length > 0)
