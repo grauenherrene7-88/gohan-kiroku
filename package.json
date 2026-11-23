@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "convert-foods": "node scripts/convert-mext.mjs"
+    "convert-foods": "node scripts/convert-mext.mjs",
+    "deploy": "npm test && tsc -b && vite build --base=/gohan-kiroku/ && gh-pages -d dist --nojekyll -m \"Deploy to GitHub Pages\""
   },
   "dependencies": {
     "@zxing/browser": "^0.2.1",
@@ -28,6 +29,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "exceljs": "^4.4.0",
     "fake-indexeddb": "^6.2.8",
+    "gh-pages": "^6.3.0",
     "oxlint": "^1.90.0",
     "typescript": "~7.0.2",
     "vite": "^8.3.6",
